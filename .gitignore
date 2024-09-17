@@ -30,4 +30,4 @@ temp/
 *.temp
 
 # Public folder (if you want to exclude generated audio files)
-public/*.mp3
+public/*
