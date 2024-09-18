@@ -29,5 +29,5 @@ temp/
 *.tmp
 *.temp
 
-# Public folder (if you want to exclude generated audio files)
+# Public folder (if you want to exclude generated files)
 public/*

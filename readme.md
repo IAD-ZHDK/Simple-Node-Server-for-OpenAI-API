@@ -42,3 +42,41 @@ This project is a simple node server that suplies synthesized speech using OpenA
             console.log(data);
 ```
 3. Use the URL link in the response to find and play mp3 once it's avalaible.
+4. Vision API queries the image and returns a text description. The text is then displayed in the browser, and the description is used as prompt for Dall-E image generation:
+
+```javascript
+   const response = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: `Describe the image. Be specific about the objects, or people, their colors, textures, etc. Use maximum ${maxTokens} tokens.`},
+            {
+              type: "image_url",
+              image_url:  {
+                url: `data:image/jpeg;base64,${base64Image}`,
+                //change to high for more detailed response
+                detail: "low"
+              }
+            },
+          ],
+        },
+      ],
+      //increase max_tokens for more detailed response
+      max_tokens: maxTokens,
+    });
+```
+
+1. Function defined in image-generator.js generates an image based on the VisionAPI response and saves it to the public folder:
+```javascript
+    const dallePrompt = "Generate an image of: " + prompt;
+    try {
+      const response = await openai.images.generate({
+        prompt: dallePrompt ,
+        n: 1,
+        size: imageSize,
+      });
+    }
+    .....
+```
