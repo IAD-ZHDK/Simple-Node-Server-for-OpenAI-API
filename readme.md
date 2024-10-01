@@ -1,6 +1,9 @@
 # Text-to-Speech Web App
 
-This project is a simple node server for accesing features of the OpenAI API, that can only used via server side code. The server is built with Node.js.
+This project is a simple node server for accessing features of the OpenAI API that can only used via server-side code. The server is built with Node.js and intended to be run locally to access the API features through HTTP requests from a page that is also running locally. 
+
+The main goal of this server is to make it easy to access these API features for design prototypes and artistic experiments. 
+
 ## Prerequisites
 
 - Node.js and npm installed on your machine.
