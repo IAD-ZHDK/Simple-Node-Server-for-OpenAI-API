@@ -97,7 +97,11 @@ app.post('/vision', async (req, res) => {
 
 // Endpoint to handle text-to-speech requests
 app.post('/text-to-speech', async (req, res) => {
-  const { text } = req.body;
+  const { text, voice = 1 } = req.body; // Extract voice parameter with default value
+  let voiceName = getVoiceName(voice);
+
+  console.log('Received text:', text);
+  console.log('Received voice:', voiceName);
 
   //get a timestamp in YYYYMMDDHHMMSSMS format
   const timeStamp = new Date().toISOString().replace(/[^0-9]/g, '');
@@ -111,7 +115,7 @@ app.post('/text-to-speech', async (req, res) => {
     return res.status(400).send('Text is required');
   }
 
-  blockingDownload(text, fileName, filePath, res);
+  download(text, fileName, filePath, res, voiceName);
 
 });
 
@@ -121,12 +125,12 @@ app.listen(port, () => {
 
 
 
-async function blockingDownload(text, fileName, filePath, res) {
+async function download(text, fileName, filePath, res, voiceString) {
   try {
     console.log("Speech synthesis initializing.");
     const mp3 = await openai.audio.speech.create({
       model: "tts-1",
-      voice: "alloy",
+      voice: voiceString,
       //speed: "1.0", // anything apart from the default is pretty poor quality 
       input: text,
     });
@@ -160,12 +164,13 @@ async function blockingDownload(text, fileName, filePath, res) {
 
 }
 
-
-async function stream(text, fileName, filePath, res) {
+// this is an atempt to stream the mp3, with out waiting for the download to complete
+// currently not implemented.
+async function stream(text, fileName, filePath, res, voiceString) {
   try {
     const response = await openai.audio.speech.create({
       model: 'tts-1',
-      voice: 'nova',
+      voice: voiceString,
       input: text,
     });
 
@@ -186,7 +191,25 @@ async function stream(text, fileName, filePath, res) {
     console.error(error);
     res.status(500).send('Error processing text-to-speech request');
   }
+}
 
+function getVoiceName(index) {
+  switch (index) {
+    case 0:
+      return 'onyx';
+    case 1:
+      return 'nova';
+    case 2:
+      return 'shimmer';
+    case 3:
+      return 'echo';
+    case 4:
+      return 'fable';
+    case 5:
+      return 'alloy';
+    default:
+      return 'onyx'; // Default voice
+  }
 }
 
 
@@ -194,7 +217,6 @@ async function streamToFile(stream, path) {
   return new Promise((resolve, reject) => {
     const writeStream = fs.createWriteStream(path).on('error', reject).on('finish', resolve);
 
-    // If you don't see a `stream.pipe` method and you're using Node you might need to add `import 'openai/shims/node'` at the top of your entrypoint file.
     stream.pipe(writeStream).on('error', (error) => {
       writeStream.close();
       reject(error);
