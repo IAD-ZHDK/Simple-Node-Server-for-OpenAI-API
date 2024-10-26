@@ -83,17 +83,37 @@ app.post('/vision', async (req, res) => {
  
   try {
     const visionResponse = await sendToVision(imagePath);
-    //you can add size parameter, "small" for 256x256, "medium" for 512x512, nothing for 1024x1024
-    await imageGenerator.generateImage(visionResponse, timeStamp, "small");
     res.json({ result: visionResponse });
   } catch (error) {
     console.error('Error processing vision request:', error);
     res.status(500).json({ error: 'Error processing vision request' });
   }
-  
-  
 
 });
+
+app.post('/generate', async(req, res) =>  {
+  const imageData = req.body.image;
+
+  if (!imageData) {
+    console.log('No valid image data provided');
+    return res.status(400).send('Image data is required');
+  } 
+  const imageBuffer = Buffer.from(imageData, 'base64');
+  const timeStamp = new Date().toISOString().replace(/[^0-9]/g, '');
+  const imageName = timeStamp + '.jpg';
+
+  const imagePath = path.resolve("./public/" + imageName);
+  fs.writeFileSync(imagePath, imageBuffer);
+
+  try {
+    //you can add size parameter, "small" for 256x256, "medium" for 512x512, nothing for 1024x1024
+    const generateResponse =  await imageGenerator.generateImage(imagePath, timeStamp, "small");
+    res.json({ result: generateResponse });
+  } catch (error) {
+    console.error('Error processing Dall-E request:', error);
+    res.status(500).json({ error: 'Error processing Dall-E request' });
+  }
+})
 
 // Endpoint to handle text-to-speech requests
 app.post('/text-to-speech', async (req, res) => {
@@ -122,7 +142,6 @@ app.post('/text-to-speech', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
-
 
 
 async function download(text, fileName, filePath, res, voiceString) {
@@ -235,7 +254,7 @@ async function sendToVision(filePath) {
         {
           role: "user",
           content: [
-            { type: "text", text: `Describe the image. Be specific about the objects, or people, their colors, textures, etc. Use maximum ${maxTokens} tokens.`},
+            { type: "text", text: `Describe the image. Be specific about the objects, or people, describe colors, textures, etc. Use maximum ${maxTokens} tokens.`},
             {
               type: "image_url",
               image_url:  {

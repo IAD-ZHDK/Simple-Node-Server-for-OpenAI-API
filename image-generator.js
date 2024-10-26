@@ -1,12 +1,12 @@
 const createImageGenerator = ({ openai, path, fs, axios }) => {
-  const generateImage = async (prompt, timeStamp, size) => {
+  const generateImage = async (imageData, timeStamp, size) => {
     const imageSize =
       size === 'small' ? '256x256' : size === 'medium' ? '512x512' : '1024x1024';
 
-    const dallePrompt = "Generate an image of: " + prompt;
+   // const dallePrompt = "Generate an image of: " + prompt;
     try {
-      const response = await openai.images.generate({
-        prompt: dallePrompt ,
+      const response = await openai.images.createVariation({
+        image: fs.createReadStream(imageData),
         n: 1,
         size: imageSize,
       });
@@ -17,11 +17,10 @@ const createImageGenerator = ({ openai, path, fs, axios }) => {
       // Download and save the image
       const imageResponse = await axios.get(imageUrl, { responseType: 'arraybuffer' });
       fs.writeFileSync(imagePath, imageResponse.data);
-      console.log("Dalle image saved to:", imagePath);
-
+      console.log("Generated image saved to:", imagePath);
       return {
         imageUrl,
-        savedImagePath: `/${timeStamp}_dalle.png` // Return the relative path
+        savedImagePath: `${imagePath}/${timeStamp}_dalle.png` // Return the absolute path
       };
     } catch (error) {
       console.error("Error generating or saving image:", error);
