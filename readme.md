@@ -1,3 +1,18 @@
+# Bits and Bolts
+
+
+1. Make sure you have both Nodejs and Google Chrome installed.
+2. Clone this repository and open it in Visual Studio Code.
+3. Create a .env file in the root directory and add your OpenAI API key 
+```  OPENAI_API_KEY='your_key_in_here' ```
+4. Open `startApp.sh` and adjust ```PROJECT_PATH``` so it leads to your project repository
+5. Open Terminal inside of VS Code and type `chmod +x startApp.sh`
+6. Run the script `./startApp.sh`
+
+
+
+
+
 # Text-to-Speech Web App
 
 This project is a simple node server for accessing features of the OpenAI API that can only used via server-side code. The server is built with Node.js and intended to be run locally to access the API features through HTTP requests from a page that is also running locally. 
