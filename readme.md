@@ -6,8 +6,9 @@
 3. Create a .env file in the root directory and add your OpenAI API key 
 ```  OPENAI_API_KEY='your_key_in_here' ```
 4. Open `startApp.sh` and adjust ```PROJECT_PATH``` so it leads to your project repository
-5. Open Terminal inside of VS Code and type `chmod +x startApp.sh`
-6. Run the script `./startApp.sh`
+5. In Terminal type `npx http-server` to install node based simple server.
+6. Open Terminal inside of VS Code and type `chmod +x startApp.sh`
+7. Create alias to your bash script on Desktop `ln -s $(pwd)/startApp.sh /Users/user/Desktop`
 
 
 
