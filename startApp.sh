@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # filepath: /Users/user/Documents/GitHub/Simple-Node-Server-for-OpenAI-API/startApp.sh
-PROJECT_PATH="/Users/user/Desktop/ChatGPT_arduino/Webapp"
+PROJECT_PATH="/Users/user/Desktop/ChatGPT_arduino"
 NODE_PATH="/Users/user/Desktop/Simple-Node-Server-for-OpenAI-API"
 
 # Navigate to the project directorys
